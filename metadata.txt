@@ -8,7 +8,7 @@
 
 [general]
 name=WFSClient3.0
-qgisMinimumVersion=3.0
+qgisMinimumVersion=2.0
 description=Client for Web Feature Service 3.0
 version=0.1
 author=Samweli Mwakisambwe
