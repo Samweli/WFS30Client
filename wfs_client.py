@@ -29,6 +29,11 @@ import resources
 from wfs_client_dockwidget import WFSClientDockWidget
 import os.path
 
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt4.QtGui import QAction, QIcon
+# Initialize Qt resources from file resources.py
+# Import the code for the dialog
+import os.path
 
 class WFSClient:
     """QGIS Plugin Implementation."""
@@ -39,14 +44,12 @@ class WFSClient:
         :param iface: An interface instance that will be passed to this class
             which provides the hook by which you can manipulate the QGIS
             application at run time.
-        :type iface: QgisInterface
+        :type iface: QgsInterface
         """
         # Save reference to the QGIS interface
         self.iface = iface
-
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
-
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -61,18 +64,15 @@ class WFSClient:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
+        # Create the dialog (after translation) and keep reference
+        self.dlg = WFSClientDockWidget(self.iface.mainWindow(), self.iface)
+
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&WFSClient3.0')
+        self.menu = self.tr(u'&WFSClient')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'WFSClient')
         self.toolbar.setObjectName(u'WFSClient')
-
-        #print "** INITIALIZING WFSClient"
-
-        self.pluginIsActive = False
-        self.dockwidget = None
-
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -89,7 +89,6 @@ class WFSClient:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('WFSClient', message)
 
-
     def add_action(
         self,
         icon_path,
@@ -97,6 +96,7 @@ class WFSClient:
         callback,
         enabled_flag=True,
         add_to_menu=True,
+        add_to_database_menu=True,
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
@@ -158,76 +158,51 @@ class WFSClient:
             self.iface.addPluginToMenu(
                 self.menu,
                 action)
+        if add_to_menu:
+            self.iface.addPluginToMenu(
+                self.menu,
+                action)
+        if add_to_database_menu:
+            self.iface.addPluginToDatabaseMenu(
+                self.menu,
+                action)
 
         self.actions.append(action)
 
         return action
 
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/WFSClient/icon.png'
+        # icon_path = ':/plugins//icon.png'
         self.add_action(
-            icon_path,
-            text=self.tr(u'Client for WFS 3.0'),
+            None,
+            text=self.tr(u'WFSClient'),
             callback=self.run,
-            parent=self.iface.mainWindow())
-
-    #--------------------------------------------------------------------------
-
-    def onClosePlugin(self):
-        """Cleanup necessary items here when plugin dockwidget is closed"""
-
-        #print "** CLOSING WFSClient"
-
-        # disconnects
-        self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
-
-        # remove this statement if dockwidget is to remain
-        # for reuse if plugin is reopened
-        # Commented next statement since it causes QGIS crashe
-        # when closing the docked window:
-        # self.dockwidget = None
-
-        self.pluginIsActive = False
-
+            parent=self.iface.mainWindow(),
+            add_to_menu=False,
+            add_to_database_menu=True,
+            status_tip="WFSClient",
+            whats_this="WFSClient")
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
-
-        #print "** UNLOAD WFSClient"
-
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&WFSClient3.0'),
+                self.tr(u'&WFSClient'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
 
-    #--------------------------------------------------------------------------
-
     def run(self):
-        """Run method that loads and starts the plugin"""
-
-        if not self.pluginIsActive:
-            self.pluginIsActive = True
-
-            #print "** STARTING WFSClient"
-
-            # dockwidget may not exist if:
-            #    first run of plugin
-            #    removed on close (see self.onClosePlugin method)
-            if self.dockwidget == None:
-                # Create the dockwidget (after translation) and keep reference
-                self.dockwidget = WFSClientDockWidget()
-
-            # connect to provide cleanup on closing of dockwidget
-            self.dockwidget.closingPlugin.connect(self.onClosePlugin)
-
-            # show the dockwidget
-            # TODO: fix to allow choice of dock location
-            self.iface.addDockWidget(Qt.BottomDockWidgetArea, self.dockwidget)
-            self.dockwidget.show()
-
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.dlg.show()
+        # Run the dialog event loop
+        result = self.dlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass

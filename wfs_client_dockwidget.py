@@ -32,52 +32,89 @@ from PyQt4.QtGui import (
 
 import requests
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'wfs_client_dockwidget_base.ui'))
+def get_ui_class(ui_file):
+    """Get UI Python class from .ui file.
+
+    :param ui_file: The file of the ui in isochrones.gui.ui
+    :type ui_file: str
+    """
+    ui_file_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            os.pardir,
+            'WFSClient',
+            ui_file
+        )
+    )
+    return uic.loadUiType(ui_file_path)[0]
+
+FORM_CLASS = get_ui_class('wfs_client_dialog_base.ui')
 
 
-class WFSClientDockWidget(QtGui.QDockWidget, FORM_CLASS):
+class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
 
-    closingPlugin = pyqtSignal()
-
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, iface=None):
         """Constructor."""
-        super(WFSClientDockWidget, self).__init__(parent)
+        QDialog.__init__(self, parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.parent = parent
+        self.iface = iface
+
         self.setupUi(self)
 
+        # Setting up progress window
+
+        self.progress_dialog = QProgressDialog(self)
+        self.progress_dialog.setAutoClose(False)
+        title = self.tr('Progress')
+        self.progress_dialog.setWindowTitle(title)
+
+        self.restore_state()
+
+        if iface:
+            self.canvas = iface.mapCanvas()
+
     def accept(self):
-        """Create an isochrone map and display it in QGIS."""
         error_dialog_title = self.tr("Error")
         try:
             self.save_state()
-            self.require_input()
-
             server_url= self.server.text()
 
             QApplication.instance().setOverrideCursor(Qt.BusyCursor)
 
             result = ""
-            clientServer = "http://localhost:5000"
+            clientServer = "http://127.0.0.1:5000"
 
             # WFS 3.0  Requirement 5
             # WFS 3.0  Requirement 6
 
-            result = requests.get(clientServer +'/?server=' + str(server_url))
+            ans = requests.get(clientServer +'/?server=' + str(server_url))
 
-            result = result + "\n" + requests.get(clientServer + '/api?server=' + str(server_url))
+            result = result + "\n" + "Testing WFS 3.0  Requirement 2 and 3 " + str(ans.text)
 
-            result = result + "\n" + requests.get(clientServer +'/api/conformance?server=' + str(server_url))
+            ans = requests.get(clientServer +'/links?server=' + str(server_url))
 
-            result = result + "\n" + requests.get(clientServer +'/link?server=' + str(server_url))
+            result = result + "\n" + "Testing WFS 3.0  Requirement 7  " + str(ans.text)
 
-            result = result + "\n" + requests.get(clientServer +'/http1.1?server=' + str(server_url))
+            ans = requests.get(clientServer +'/http1.1?server=' + str(server_url))
 
-            result = result + "\n" + requests.get(clientServer +'/etag?server=' + str(server_url))
+            result = result + "\n" +  "Testing WFS 3.0  Requirement 4  " + str(ans.text)
+
+            ans = requests.get(clientServer +'/etag?server=' + str(server_url))
+
+            result = result + "\n" + "Testing WFS 3.0  Recommendation 2  " + str(ans.text)
+
+            result = result + "Testing WFS 3.0  Requirement 5 and 6 " + ans.text
+
+           
+
+            result = result + "Testing WFS 3.0  Requirement 30  " + str(ans.text)
+
+            ans = requests.get(clientServer +'/api/conformance?server=' + str(server_url))
 
             self.textBrowser.setText(result);
 
@@ -93,17 +130,32 @@ class WFSClientDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.done(QDialog.Accepted)
 
         except Exception as exception:  # pylint: disable=broad-except
+            sti = exception
             # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
-            self.display_warning_message_box(
-                self, error_dialog_title, exception.message)
             pass
         finally:
             dialog_title = self.tr("Success")
 
+    def restore_state(self):
+        """ Read last state of GUI from configuration file."""
+        settings = QSettings()
+        try:
+            database_name = settings.value('database', type=str)
 
-    def closeEvent(self, event):
-        self.closingPlugin.emit()
-        event.accept()
+        except TypeError:
+            database_name = ''
+
+        self.server.setText("")
+
+    def save_state(self):
+        """ Store current state of GUI to configuration file """
+        settings = QSettings()
+
+
+    def reject(self):
+        """Redefinition of the reject() method
+        """
+        super (WFSClientDockWidget, self).reject()
 
     def display_warning_message_box(parent=None, title=None, message=None):
         """

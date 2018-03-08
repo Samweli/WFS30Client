@@ -19,8 +19,8 @@
   <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>290</y>
+     <x>40</x>
+     <y>310</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -57,13 +57,6 @@
     <bool>false</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <widget class="QLabel" name="input_server_file_label_">
-      <property name="text">
-       <string>Server Url</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1">
      <widget class="QLineEdit" name="server">
       <property name="sizePolicy">
@@ -82,54 +75,61 @@
        <string/>
       </property>
       <property name="placeholderText">
-       <string>eg. roads</string>
+       <string>eg. https://www.ldproxy.nrw.de/kataster/?f=json</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="input_server_file_label_">
+      <property name="text">
+       <string>Server Url</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="Q3TextBrowser" name="textBrowser">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>160</y>
-     <width>361</width>
-     <height>101</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
+  <widget class="QLineEdit" name="textBrowser">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>130</y>
-     <width>101</width>
-     <height>21</height>
+     <y>150</y>
+     <width>371</width>
+     <height>141</height>
     </rect>
    </property>
-   <property name="title">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="inputMethodHints">
+    <set>Qt::ImhNone</set>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string></string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="input_server_file_label_1">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>110</y>
+     <width>67</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="text">
     <string>Output</string>
    </property>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>Q3TextEdit</extends>
-   <header>Qt3Support/Q3TextBrowser</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
