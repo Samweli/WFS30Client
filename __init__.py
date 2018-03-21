@@ -31,5 +31,10 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgisInterface
     """
     #
+
     from .wfs_client import WFSClient
+    import sys
+    sys.path.append('/home/samweli/Setups/pycharm-5.0.1/debug-eggs/pycharm-debug.egg')
+    import pydevd
+    pydevd.settrace('localhost', port=54321, stdoutToServer=True, stderrToServer=True)
     return WFSClient(iface)

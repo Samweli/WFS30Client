@@ -22,6 +22,7 @@
 """
 
 import os
+import qgis
 
 from PyQt4 import QtGui, uic
 from PyQt4.QtCore import *
@@ -29,6 +30,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtGui import (
     QDialog,)
+
+from PyQt4.QtCore import QCoreApplication, QFile, QUrl, QByteArray
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 
 import requests
 
@@ -83,40 +87,14 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
         try:
             self.save_state()
             server_url= self.server.text()
+            clientServer = "http://127.0.0.1:5000"
 
             QApplication.instance().setOverrideCursor(Qt.BusyCursor)
 
-            result = ""
-            clientServer = "http://127.0.0.1:5000"
+            result_text = ""
 
             # WFS 3.0  Requirement 5
             # WFS 3.0  Requirement 6
-
-            ans = requests.get(clientServer +'/?server=' + str(server_url))
-
-            result = result + "\n" + "Testing WFS 3.0  Requirement 2 and 3 " + str(ans.text)
-
-            ans = requests.get(clientServer +'/links?server=' + str(server_url))
-
-            result = result + "\n" + "Testing WFS 3.0  Requirement 7  " + str(ans.text)
-
-            ans = requests.get(clientServer +'/http1.1?server=' + str(server_url))
-
-            result = result + "\n" +  "Testing WFS 3.0  Requirement 4  " + str(ans.text)
-
-            ans = requests.get(clientServer +'/etag?server=' + str(server_url))
-
-            result = result + "\n" + "Testing WFS 3.0  Recommendation 2  " + str(ans.text)
-
-            result = result + "Testing WFS 3.0  Requirement 5 and 6 " + ans.text
-
-           
-
-            result = result + "Testing WFS 3.0  Requirement 30  " + str(ans.text)
-
-            ans = requests.get(clientServer +'/api/conformance?server=' + str(server_url))
-
-            self.textBrowser.setText(result);
 
             # WFS 3.0 Requirement 7
 
@@ -125,12 +103,37 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
             # WFS 3.0 Requirement 2
             # WFS 3.0 Requirement 3
 
+            response = requests.get(clientServer +'/?server=' + str(server_url))
+
+            result_text = result_text + "\n" + "Testing WFS 3.0  Requirement 2 and 3 " + str(response.text)
+
+            response = requests.get(clientServer + '/api?server=' + str(server_url))
+
+            result_text = result_text + "Testing WFS 3.0  Requirement 30  " + str(response.text)
+
+            response = requests.get(clientServer +'/api/conformance?server=' + str(server_url))
+
+            result_text = result_text + "Testing WFS 3.0  Requirement 5 and 6 " + response.text
+
+            response = requests.get(clientServer +'/links?server=' + str(server_url))
+
+            result_text = result_text + "\n" + "Testing WFS 3.0  Requirement 7  " + str(response.text)
+
+            response = requests.get(clientServer +'/http1.1?server=' + str(server_url))
+
+            result_text = result_text + "\n" + "Testing WFS 3.0  Requirement 4  " + str(response.text)
+
+            response = requests.get(clientServer +'/etag?server=' + str(server_url))
+
+            result_text = result_text + "\n" + "Testing WFS 3.0  Recommendation 2  " + str(response.text)
+
+            self.textEdit.setText(result_text)
+
             QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
 
             self.done(QDialog.Accepted)
 
         except Exception as exception:  # pylint: disable=broad-except
-            sti = exception
             # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
             pass
         finally:
@@ -139,11 +142,6 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
     def restore_state(self):
         """ Read last state of GUI from configuration file."""
         settings = QSettings()
-        try:
-            database_name = settings.value('database', type=str)
-
-        except TypeError:
-            database_name = ''
 
         self.server.setText("")
 
@@ -151,10 +149,12 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
         """ Store current state of GUI to configuration file """
         settings = QSettings()
 
-
     def reject(self):
         """Redefinition of the reject() method
         """
+        # if ()
+        #  QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
+        # 
         super (WFSClientDockWidget, self).reject()
 
     def display_warning_message_box(parent=None, title=None, message=None):

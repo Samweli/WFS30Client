@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>677</height>
+    <height>367</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,9 +35,9 @@
   <widget class="QGroupBox" name="output_group_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>0</x>
      <y>10</y>
-     <width>381</width>
+     <width>391</width>
      <height>111</height>
     </rect>
    </property>
@@ -88,34 +88,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLineEdit" name="textBrowser">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>150</y>
-     <width>371</width>
-     <height>141</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="inputMethodHints">
-    <set>Qt::ImhNone</set>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="placeholderText">
-    <string></string>
-   </property>
-  </widget>
   <widget class="QLabel" name="input_server_file_label_1">
    <property name="geometry">
     <rect>
@@ -127,6 +99,16 @@
    </property>
    <property name="text">
     <string>Output</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>150</y>
+     <width>361</width>
+     <height>151</height>
+    </rect>
    </property>
   </widget>
  </widget>
