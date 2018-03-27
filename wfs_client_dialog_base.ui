@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>551</width>
     <height>367</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
   <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>200</x>
      <y>310</y>
      <width>341</width>
      <height>32</height>
@@ -36,7 +36,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>10</y>
+     <y>-20</y>
      <width>391</width>
      <height>111</height>
     </rect>
@@ -48,7 +48,7 @@
     </sizepolicy>
    </property>
    <property name="title">
-    <string>WFS30Client</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -92,7 +92,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>110</y>
+     <y>80</y>
      <width>67</width>
      <height>42</height>
     </rect>
@@ -105,9 +105,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>150</y>
-     <width>361</width>
-     <height>151</height>
+     <y>120</y>
+     <width>511</width>
+     <height>161</height>
     </rect>
    </property>
   </widget>

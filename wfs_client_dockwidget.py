@@ -87,7 +87,7 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
         try:
             self.save_state()
             server_url= self.server.text()
-            clientServer = "http://127.0.0.1:5000"
+            clientServer = "https://wfsclient.herokuapp.com"
 
             QApplication.instance().setOverrideCursor(Qt.BusyCursor)
 
@@ -105,15 +105,15 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
 
             response = requests.get(clientServer +'/?server=' + str(server_url))
 
-            result_text = result_text + "\n" + "Testing WFS 3.0  Requirement 2 and 3 " + str(response.text)
+            result_text = result_text + "Testing WFS 3.0  Requirement 2 and 3 " + str(response.text)
 
             response = requests.get(clientServer + '/api?server=' + str(server_url))
 
-            result_text = result_text + "Testing WFS 3.0  Requirement 30  " + str(response.text)
+            result_text = result_text + "\n" + "Testing WFS 3.0  Requirement 30  " + str(response.text)
 
             response = requests.get(clientServer +'/api/conformance?server=' + str(server_url))
 
-            result_text = result_text + "Testing WFS 3.0  Requirement 5 and 6 " + response.text
+            result_text = result_text + "\n" + "Testing WFS 3.0  Requirement 5 and 6 " + response.text
 
             response = requests.get(clientServer +'/links?server=' + str(server_url))
 
@@ -130,8 +130,6 @@ class WFSClientDockWidget(QtGui.QDialog, FORM_CLASS):
             self.textEdit.setText(result_text)
 
             QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
-
-            self.done(QDialog.Accepted)
 
         except Exception as exception:  # pylint: disable=broad-except
             # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
